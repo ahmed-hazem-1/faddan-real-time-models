@@ -1,0 +1,55 @@
+crop: tomato
+model:
+  id: faddan_segformer_b0_tomato
+  architecture: segformer_b0
+  weights: weights/stageB_segformer_b0_tomato_best.pth
+  input_size: 512
+  normalization:
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+    channel_order: rgb_after_bgr_flip
+classes:
+  - {id: 0, name: background, ignore_in_metrics: true}
+  - {id: 1, name: bacterial_spot}
+  - {id: 2, name: early_blight}
+  - {id: 3, name: late_blight}
+  - {id: 4, name: leaf_miner}
+  - {id: 5, name: leaf_mold}
+  - {id: 6, name: mosaic_virus}
+  - {id: 7, name: septoria_leaf_spot}
+  - {id: 8, name: spider_mite}
+  - {id: 9, name: yellow_leaf_curl_virus}
+preprocessing:
+  wb_gain_clip: [0.5, 2.0]
+  clahe:
+    clip: 2.0
+    tiles: [8, 8]
+  glare:
+    pctl: 99.0
+    min_L: 240.0
+    dilate: 7
+    radius: 3
+    max_frac: 0.20
+  bilateral:
+    d: 5
+    sigma: 50
+  unsharp:
+    amount: 0.5
+    radius: 1
+  brightness:
+    lo: 110
+    hi: 140
+    gain_clip: [0.6, 1.5]
+severity:
+  early_max: 0.05
+  mid_max: 0.20
+inference:
+  mode: whole_image
+  input_size: 512
+cleanup:
+  morph_open: false
+  min_component_px: 0
+tiling:
+  enabled: false
+  size: 512
+  stride: 448
